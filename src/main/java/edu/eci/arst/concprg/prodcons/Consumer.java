@@ -17,15 +17,22 @@ public class Consumer extends Thread{
     
     
     public Consumer(Queue<Integer> queue){
-        this.queue=queue;        
+        this.queue=queue;
     }
     
     @Override
     public void run() {
         while (true) {
-
             if (queue.size() > 0) {
                 int elem=queue.poll();
+                try {
+                    Thread.sleep(100);
+                    synchronized (queue){
+                        queue.notifyAll();
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 System.out.println("Consumer consumes "+elem);                                
             }
             

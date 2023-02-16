@@ -1,0 +1,10 @@
+2. Para N jugadores deberia el invariante deberia ser la suma de la vida de todos los inmortales
+Si comenzaron todos con 100 de vida y son 5 jugadores, el invariante va a ser 500 que sera la suma de
+la vida de todos los jugadores asi alguno muera.
+3. No se cumple el invariante, siempre da valores distintos
+5. Ahora si se cumple ya al pausar todos los hilos no se producen modificaciones sobre la salud y
+se imprime de manera correcta el invariante
+9. Hay ligeras variaciones de +- 10 para cuando son valores muy grandes. Gran cantidad de inmortales
+10. Al haber gran cantidad de inmortales y tantos hilos ejecutandose a la vez se puede generar
+que igual al remover un inmortal de la lista este siga peleando con otro que ya esta muerto.
+Que caiga que el immortal para fight sea justamente uno que ya esta muerto.

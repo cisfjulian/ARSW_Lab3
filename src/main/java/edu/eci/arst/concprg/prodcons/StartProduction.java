@@ -16,14 +16,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StartProduction {
-    
+
+    private static int stock;
     
     public static void main(String[] args) {
+        stock = 100;
         
         Queue<Integer> queue=new LinkedBlockingQueue<>();
         
         
-        new Producer(queue,Long.MAX_VALUE).start();
+        new Producer(queue,stock).start();
         
         //let the producer create products for 5 seconds (stock).
         try {

@@ -73,13 +73,14 @@ public class ControlFrame extends JFrame {
                 immortals = setupInmortals();
 
                 if (immortals != null) {
-                    for (Immortal im : immortals) {
-                        im.start();
+                    synchronized (immortals) {
+                        for (Immortal im : immortals) {
+                            im.start();
+                        }
                     }
                 }
 
                 btnStart.setEnabled(false);
-
             }
         });
         toolBar.add(btnStart);
@@ -87,10 +88,7 @@ public class ControlFrame extends JFrame {
         JButton btnPauseAndCheck = new JButton("Pause and check");
         btnPauseAndCheck.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                /*
-				 * COMPLETAR
-                 */
+                pause();
                 int sum = 0;
                 for (Immortal im : immortals) {
                     sum += im.getHealth();
@@ -108,9 +106,7 @@ public class ControlFrame extends JFrame {
 
         btnResume.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /**
-                 * IMPLEMENTAR
-                 */
+                resume();
 
             }
         });
@@ -129,6 +125,13 @@ public class ControlFrame extends JFrame {
         btnStop.setForeground(Color.RED);
         toolBar.add(btnStop);
 
+        btnStop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                killAll();
+                JOptionPane.showMessageDialog(null, "All immortals are dead. Game end");
+            }
+        });
+
         scrollPane = new JScrollPane();
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
@@ -140,9 +143,30 @@ public class ControlFrame extends JFrame {
         statisticsLabel = new JLabel("Immortals total health:");
         contentPane.add(statisticsLabel, BorderLayout.SOUTH);
 
+
+
     }
 
-    public List<Immortal> setupInmortals() {
+    public void pause(){
+        for(Immortal immortal:immortals){
+            immortal.pause();
+        }
+    }
+
+    public void resume(){
+        for(Immortal immortal:immortals){
+            immortal.resumeImmortal();
+        }
+    }
+
+    public void killAll(){
+        for(Immortal immortal:immortals){
+            immortal.kill();
+        }
+    }
+
+
+    public synchronized List<Immortal> setupInmortals() {
 
         ImmortalUpdateReportCallback ucb=new TextAreaUpdateReportCallback(output,scrollPane);
         

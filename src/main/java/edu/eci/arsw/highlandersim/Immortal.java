@@ -17,6 +17,10 @@ public class Immortal extends Thread {
 
     private final Random r = new Random(System.currentTimeMillis());
 
+    private boolean paused = false;
+
+    private boolean dead = false;
+
 
     public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb) {
         super(name);
@@ -29,21 +33,23 @@ public class Immortal extends Thread {
 
     public void run() {
 
-        while (true) {
+        while (health > 0) {
+            this.inPause();
             Immortal im;
+            synchronized (immortalsPopulation) {
+                int myIndex = immortalsPopulation.indexOf(this);
 
-            int myIndex = immortalsPopulation.indexOf(this);
+                int nextFighterIndex = r.nextInt(immortalsPopulation.size());
 
-            int nextFighterIndex = r.nextInt(immortalsPopulation.size());
+                //avoid self-fight
+                if (nextFighterIndex == myIndex) {
+                    nextFighterIndex = ((nextFighterIndex + 1) % immortalsPopulation.size());
+                }
 
-            //avoid self-fight
-            if (nextFighterIndex == myIndex) {
-                nextFighterIndex = ((nextFighterIndex + 1) % immortalsPopulation.size());
+                im = immortalsPopulation.get(nextFighterIndex);
+
+                this.fight(im);
             }
-
-            im = immortalsPopulation.get(nextFighterIndex);
-
-            this.fight(im);
 
             try {
                 Thread.sleep(1);
@@ -52,7 +58,11 @@ public class Immortal extends Thread {
             }
 
         }
-
+        synchronized (immortalsPopulation){
+            if(health==0){
+                immortalsPopulation.remove(this);
+            }
+        }
     }
 
     public void fight(Immortal i2) {
@@ -66,6 +76,30 @@ public class Immortal extends Thread {
         }
 
     }
+
+    public synchronized void inPause(){
+        while(paused || dead){
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public synchronized void resumeImmortal(){
+        this.paused = false;
+        notifyAll();
+    }
+
+    public void pause(){
+        this.paused = true;
+    }
+
+    public void kill(){
+        this.dead = true;
+    }
+
 
     public void changeHealth(int v) {
         health = v;
