@@ -96,9 +96,8 @@ Sincronización y Dead-Locks.
 ##### Parte I
 
 1. Revisando el uso de CPU tenemos un uso del 12% de manera constante mientras se ejecuta. La clase responsable es StartProduction
-![img.png](img/img.png)
+![img.png](img%2Fimg.png)
 2. Luego de modificar el codigo para el momento que se usa wait/notify
-![img_1.png](img/img_1.png)
-Se reduce el uso de CPU ya que es el consumidor quien notifica al productor cuando requiera de un espacio
-en el thread. Por lo cual no hay momentos de ineficiencia o muertos, el productor sigue produciendo a su ritmo
+Se reduce el uso de CPU ya que es el consumidor quien notifica al productor cuando requiera de un espacio en el thread. Por lo cual no hay momentos muertos, el productor sigue produciendo a su ritmo
 y el consumidor le dira cuando pueda continuar.
+![img_1.png](img%2Fimg_1.png)
